@@ -1,0 +1,33 @@
+{% extends "hopital/baseagent.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Détails du Rendez-Vous</h1>
+
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <tr>
+                <th scope="row">Étudiant</th>
+                <td>{{ rdv.etudiant.nom }} {{ rdv.etudiant.prenom }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Médecin</th>
+                <td>{{ rdv.medecin.nom }} {{ rdv.medecin.prenom }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Date</th>
+                <td>{{ rdv.date_rdv }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Heure</th>
+                <td>{{ rdv.heure }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Statut</th>
+                <td>{{ rdv.statut }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{% url 'rdv_list' %}" class="btn btn-primary mt-3">← Retour à la liste des Rendez-Vous</a>
+</div>
+{% endblock %}

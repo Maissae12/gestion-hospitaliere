@@ -1,0 +1,17 @@
+{% extends "hopital/baseagent.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-danger">Supprimer ce dossier médical ?</h1>
+
+    <div class="card p-4">
+        <p>Êtes-vous sûr de vouloir supprimer le dossier médical de <strong>{{ dossier.etudiant.nom }} {{ dossier.etudiant.prenom }}</strong> ? Cette action est irréversible.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2">Supprimer</button>
+            <a href="{% url 'dossier_list' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

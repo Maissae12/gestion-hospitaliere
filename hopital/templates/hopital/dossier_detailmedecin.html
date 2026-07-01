@@ -1,0 +1,176 @@
+{% extends "hopital/basemedecin.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Détails du Dossier Médical</h1>
+
+    <!-- Informations du Dossier -->
+    <table class="table table-bordered table-striped mb-4">
+        <tbody>
+            <tr>
+                <th scope="row">ID</th>
+                <td>{{ dossier.id }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Étudiant</th>
+                <td>{{ dossier.etudiant.nom }} {{ dossier.etudiant.prenom }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Groupe sanguin</th>
+                <td>{{ dossier.groupe_sanguin }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Allergies</th>
+                <td>{{ dossier.allergies|default:"Aucune" }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Maladies chroniques</th>
+                <td>{{ dossier.maladies_chroniques|default:"Aucune" }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Date de création</th>
+                <td>{{ dossier.date_creation }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Couverture médicale</th>
+                <td>{{ dossier.couverture_medicale|default:"Aucune" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Consultations -->
+    <h3>Consultations</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Médecin</th>
+                    <th>Date / Heure</th>
+                    <th>Diagnostic</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in consultations %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.medecin.nom }} {{ c.medecin.prenom }}</td>
+                    <td>{{ c.rdv.date_rdv }} à {{ c.rdv.heure }}</td>
+                    <td>{{ c.diagnostic|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'consultation_detail' c.id %}" class="btn btn-info btn-sm me-1" title="Voir">
+                            <i class="bi bi-eye"></i> Voir
+                        </a>
+                        <a href="{% url 'consultation_delete' c.id %}" class="btn btn-danger btn-sm" title="Supprimer">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucune consultation trouvée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Prescriptions -->
+    <h3>Prescriptions</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>ID</th>
+                    <th>Consultation</th>
+                    <th>Médicament</th>
+                    <th>Durée</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in prescriptions %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td>{{ p.consultation.id }}</td>
+                    <td>{{ p.medicament.nom_medicament }}</td>
+                    <td>{{ p.duree|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'prescription_detail' p.id %}" class="btn btn-info btn-sm me-1" title="Voir">
+                            <i class="bi bi-eye"></i> Voir
+                        </a>
+                        <a href="{% url 'prescription_delete' p.id %}" class="btn btn-danger btn-sm" title="Supprimer">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucune prescription trouvée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Vaccinations -->
+    <h3>Vaccinations</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-warning">
+                <tr>
+                    <th>ID</th>
+                    <th>Nom du vaccin</th>
+                    <th>Date</th>
+                    
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in vaccinations %}
+                <tr>
+                    <td>{{ v.id }}</td>
+                    <td>{{ v.nom_vaccin }}</td>
+                    <td>{{ v.date_vaccin }}</td>
+                    
+                    <td>
+                        
+                        <a href="{% url 'vaccination_delete' v.id %}" class="btn btn-danger btn-sm" title="Supprimer">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucune vaccination trouvée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{% url 'dossier_listmedecin' %}" class="btn btn-primary mt-3">← Retour à la liste des dossiers</a>
+</div>
+
+<!-- Styles personnalisés -->
+<style>
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.table-hover tbody tr:hover {
+    background-color: #e3f2fd;
+}
+.table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+}
+.btn-sm i {
+    margin-right: 4px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "hopital/baseagent.html" %}
+{% block content %}
+<h2>Vaccination</h2>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Formulaire Vaccination</h1>
+
+    <form method="post" class="p-4 shadow-sm rounded bg-light">
+
+    {% csrf_token %}
+<!-- Dossier Médical avec autocomplete -->
+<div class="mb-3">
+    <label for="dossier_autocomplete" class="form-label">Dossier Médical</label>
+    <input type="text" id="dossier_autocomplete" class="form-control"
+           placeholder="Tapez le nom de l'étudiant"
+           value="{% if form.instance.pk %}{{ form.instance.dossier.etudiant.nom }} {{ form.instance.dossier.etudiant.prenom }}{% endif %}">
+    <input type="hidden" name="dossier" id="dossier_id"
+           value="{% if form.instance.pk %}{{ form.instance.dossier.id }}{% endif %}">
+
+    {% if form.dossier.errors %}
+        <div class="text-danger">
+            {% for error in form.dossier.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+    <!-- Nom du vaccin -->
+    <div class="mb-3">
+        {{ form.nom_vaccin.label_tag }}
+        {{ form.nom_vaccin }}
+        {% if form.nom_vaccin.errors %}
+            <div class="text-danger">
+                {% for error in form.nom_vaccin.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Rappel (optionnel) -->
+    <div class="mb-3">
+        {{ form.rappel.label_tag }}
+        {{ form.rappel }}
+        {% if form.rappel.errors %}
+            <div class="text-danger">
+                {% for error in form.rappel.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bouton Enregistrer -->
+        <button type="submit" class="btn btn-gradient px-4 py-2 mt-3">Enregistrer</button>
+        <a href="{% url 'dossier_list' %}" class="btn btn-secondary px-4 py-2 mt-3 ms-2">Retour à la liste</a>
+
+</form>
+
+
+<!-- jQuery + Autocomplete -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+<script>
+$(function() {
+    $("#dossier_autocomplete").autocomplete({
+        source: "{% url 'autocomplete_dossier' %}",
+        minLength: 0,
+        select: function(event, ui) {
+            $("#dossier_autocomplete").val(ui.item.label); // texte affiché
+            $("#dossier_id").val(ui.item.id); // ID stocké
+            return false;
+        }
+    }).focus(function() {
+        $(this).autocomplete("search", "");
+    });
+});
+</script>
+
+<style>
+.btn-gradient {
+    background: linear-gradient(90deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #2a5298, #1e3c72);
+    color: white;
+}
+</style>
+
+
+{% endblock %}

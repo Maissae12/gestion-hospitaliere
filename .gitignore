@@ -1,0 +1,35 @@
+# Environnement virtuel
+geshos/
+venv/
+env/
+
+# Variables d'environnement (contient les mots de passe/secrets)
+.env
+
+# Base de données locale
+db.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+*.log
+media/
+
+# Fichiers statiques collectés (si tu utilises collectstatic)
+staticfiles/
+
+# VS Code / éditeurs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (si Vue.js a son propre dossier front avec node_modules)
+node_modules/
+dist/

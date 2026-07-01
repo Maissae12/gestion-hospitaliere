@@ -1,0 +1,122 @@
+{% extends "hopital/baseagent.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Formulaire Dossier Médical</h2>
+
+    <form method="post" class="p-4 shadow-sm rounded bg-light">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Étudiant avec autocomplete -->
+        <div class="mb-3">
+            <label for="dossier_autocomplete">Étudiant</label>
+            <input type="text" id="dossier_autocomplete" class="form-control" placeholder="Cliquez pour afficher la liste">
+            <input type="hidden" name="etudiant" id="id_etudiant_hidden" value="{{ form.etudiant.value|default_if_none:'' }}">
+            {{ form.etudiant.errors }}
+        </div>
+
+        <!-- Groupe sanguin -->
+        <div class="mb-3">
+            <label for="{{ form.groupe_sanguin.id_for_label }}">{{ form.groupe_sanguin.label }}</label>
+            {{ form.groupe_sanguin }}
+            {{ form.groupe_sanguin.errors }}
+        </div>
+
+        <!-- Couverture médicale -->
+        <div class="mb-3">
+            <label for="{{ form.couverture_medicale_select.id_for_label }}">{{ form.couverture_medicale_select.label }}</label>
+            {{ form.couverture_medicale_select }}
+            {{ form.couverture_medicale_select.errors }}
+        </div>
+
+        <!-- Autre couverture (affiché seulement si select = "Autre") -->
+        <div class="mb-3" id="div_couverture_autre" style="display:none;">
+            <label for="{{ form.couverture_medicale_autre.id_for_label }}">{{ form.couverture_medicale_autre.label }}</label>
+            {{ form.couverture_medicale_autre }}
+            {{ form.couverture_medicale_autre.errors }}
+        </div>
+
+        <!-- Autres champs -->
+        {% for field in form %}
+            {% if field.name not in "etudiant couverture_medicale_select couverture_medicale_autre couverture_medicale groupe_sanguin" %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Bouton Enregistrer -->
+        <button type="submit" class="btn btn-gradient px-4 py-2 mt-3">Enregistrer</button>
+        <a href="{% url 'dossier_list' %}" class="btn btn-secondary px-4 py-2 mt-3 ms-2">Retour à la liste</a>
+    </form>
+</div>
+
+<!-- Styles pour le bouton dégradé -->
+<style>
+.btn-gradient {
+    background: linear-gradient(90deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #2a5298, #1e3c72);
+    color: white;
+}
+</style>
+
+<!-- Script Couverture médicale -->
+<script>
+const selectCouverture = document.getElementById("id_couverture_medicale_select");
+const divAutre = document.getElementById("div_couverture_autre");
+const inputAutre = document.getElementById("id_couverture_medicale_autre");
+
+function toggleAutre() {
+    if (selectCouverture.value === "Autre") {
+        divAutre.style.display = "block";
+        inputAutre.required = true;
+    } else {
+        divAutre.style.display = "none";
+        inputAutre.required = false;
+    }
+}
+selectCouverture.addEventListener("change", toggleAutre);
+toggleAutre();
+</script>
+
+<!-- Script Autocomplete Étudiant -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<script>
+$(function () {
+    $("#dossier_autocomplete").autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: "{% url 'autocomplete_etudiant_dossier' %}",
+                data: { term: request.term },
+                dataType: "json",
+                success: function(data) { response(data); }
+            });
+        },
+        minLength: 0,
+        select: function(event, ui) {
+            $("#dossier_autocomplete").val(ui.item.label);
+            $("#id_etudiant_hidden").val(ui.item.id);
+            return false;
+        }
+    }).focus(function() { $(this).autocomplete("search", ""); });
+});
+</script>
+{% endblock %}

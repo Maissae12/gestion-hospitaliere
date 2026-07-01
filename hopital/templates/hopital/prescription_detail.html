@@ -1,0 +1,35 @@
+{% extends "hopital/basemedecin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Détails de la Prescription</h1>
+
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <tr>
+                <th scope="row">Consultation ID</th>
+                <td>{{ prescription.consultation.id }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Étudiant</th>
+                <td>{{ prescription.consultation.dossier.etudiant.nom }} {{ prescription.consultation.dossier.etudiant.prenom }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Médecin</th>
+                <td>{{ prescription.consultation.medecin.nom }} {{ prescription.consultation.medecin.prenom }}</td>
+            </tr>
+           <tr>
+    <th scope="row">Médicament</th>
+    <td>{{ prescription.medicament.nom_medicament }} ({{ prescription.medicament.get_forme_display }})</td>
+</tr>
+
+            <tr>
+                <th scope="row">Durée</th>
+                <td>{{ prescription.duree|default:"-" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{% url 'prescription_list' %}" class="btn btn-primary mt-3">← Retour à la liste des prescriptions</a>
+</div>
+{% endblock %}

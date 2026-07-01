@@ -1,0 +1,143 @@
+ {% extends "hopital/basemedecin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Formulaire Prescription</h2>
+
+    <!-- Messages d'erreur -->
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        {% for field in form %}
+          {% for error in field.errors %}
+            <p><strong>{{ field.label }} :</strong> {{ error }}</p>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" class="p-4 shadow-sm rounded bg-light">
+        {% csrf_token %}
+
+        <!-- Consultation autocomplete -->
+        <div class="mb-3">
+            <label class="form-label">Consultation</label>
+            <input type="text" id="consultation_autocomplete" class="form-control"
+                   placeholder="Rechercher par étudiant, médecin ">
+            <input type="hidden" name="consultation" id="consultation_id">
+        </div>
+
+        <!-- Médicament -->
+        
+<div class="mb-3">
+    <label class="form-label" for="{{ form.medicament.id_for_label }}">{{ form.medicament.label }}</label>
+    <input type="text" id="medicament_autocomplete" class="form-control" placeholder="Nom du médicament">
+<input type="hidden" name="medicament" id="medicament">
+
+    {{ form.medicament.errors }}
+</div>
+      
+
+        <!-- Durée -->
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.duree.id_for_label }}">{{ form.duree.label }}</label>
+            {{ form.duree }}
+            {{ form.duree.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-gradient px-4 py-2 mt-3">Enregistrer</button>
+        <a href="{% url 'prescription_list' %}" class="btn btn-secondary px-4 py-2 mt-3 ms-2">Retour à la liste</a>
+    </form>
+</div>
+
+<!-- jQuery + Autocomplete -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+<script>
+    
+    $(document).ready(function() {
+    $('.js-medicament-select').select2({
+        placeholder: "Tapez le nom du médicament",
+        allowClear: true
+    });
+});
+
+$(function() {
+    $("#consultation_autocomplete").autocomplete({
+        source: function(request, response) {
+            $.getJSON("{% url 'autocomplete_consultation' %}", { term: request.term }, function(data) {
+                response($.map(data, function(item) {
+                    return { label: item.label, value: item.id };
+                }));
+            });
+        },
+        minLength: 0,
+        select: function(event, ui) {
+            $("#consultation_autocomplete").val(ui.item.label);
+            $("#consultation_id").val(ui.item.value);
+            return false;
+        }
+    });
+
+    // Afficher la liste complète dès clic
+    $("#consultation_autocomplete").focus(function() {
+        $(this).autocomplete("search", "");
+    });
+
+    // Préremplissage si modification
+    {% if form.instance.pk %}
+        $("#consultation_autocomplete").val(
+            "Consultation RDV {{ form.instance.consultation.rdv }} – " +
+            "{{ form.instance.consultation.dossier.etudiant.nom }} {{ form.instance.consultation.dossier.etudiant.prenom }} avec Dr {{ form.instance.consultation.medecin.nom }} {{ form.instance.consultation.medecin.prenom }}"
+        );
+        $("#consultation_id").val("{{ form.instance.consultation.id }}");
+    {% endif %}
+    // Préremplissage Médicament si modification
+{% if form.instance.pk %}
+    {% if form.instance.medicament %}
+        $("#medicament_autocomplete").val(
+            "{{ form.instance.medicament.nom_medicament }} ({{ form.instance.medicament.forme }})"
+        );
+        $("#medicament").val("{{ form.instance.medicament.id }}");
+    {% endif %}
+{% endif %}
+});
+
+$(function() {
+    $("#medicament_autocomplete").autocomplete({
+        source: function(request, response) {
+            $.getJSON("{% url 'autocomplete_medicament' %}", { term: request.term }, function(data) {
+                response($.map(data, function(item) {
+                    return { label: item.nom_medicament + " (" + item.forme + ")", value: item.id };
+                }));
+            });
+        },
+        minLength: 0,
+        select: function(event, ui) {
+            $("#medicament_autocomplete").val(ui.item.label);
+            $("#medicament").val(ui.item.value);
+            return false;
+        }
+    });
+});
+
+</script>
+
+<style>
+.btn-gradient {
+    background: linear-gradient(90deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #2a5298, #1e3c72);
+    color: white;
+}
+</style>
+
+{% endblock %}

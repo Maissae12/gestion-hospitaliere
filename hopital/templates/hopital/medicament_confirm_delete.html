@@ -1,0 +1,51 @@
+{% extends "hopital/basemedecin.html" %}
+
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
+        
+
+        {% if is_used %}
+            <!-- Message si le médicament est utilisé -->
+            <p class="text-center fs-5 text-danger">
+                 Impossible de supprimer le médicament 
+                <strong>{{ medicament.nom_medicament }}</strong>.<br>
+                Il est déjà utilisé dans une prescription.
+            </p>
+            <div class="d-flex justify-content-center mt-4">
+                <a href="{% url 'medicament_list' %}" class="btn btn-secondary px-4 py-2">Retour à la liste</a>
+            </div>
+        {% else %}
+            <!-- Formulaire normal si pas utilisé -->
+            <p class="text-center fs-5">
+                Êtes-vous sûr de vouloir supprimer le médicament
+                <strong>{{ medicament.nom_medicament }}</strong> ?
+            </p>
+            <p class="text-center text-muted">
+                Cette action est définitive et ne peut pas être annulée.
+            </p>
+
+            <form method="post" class="d-flex justify-content-center mt-4 gap-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-gradient px-4 py-2">Supprimer</button>
+                <a href="{% url 'medicament_list' %}" class="btn btn-secondary px-4 py-2">Annuler</a>
+            </form>
+        {% endif %}
+
+    </div>
+</div>
+
+<style>
+.btn-gradient {
+    background: linear-gradient(90deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #2a5298, #1e3c72);
+    transform: scale(1.05);
+}
+</style>
+{% endblock %}

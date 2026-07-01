@@ -1,0 +1,132 @@
+{% extends "hopital/baseagent.html" %}
+{% block content %}
+
+<h2>Formulaire Rendez-vous</h2>
+
+<!-- Messages d'erreur globaux -->
+{% if form.errors %}
+  <div>
+    {% for field in form %}
+        {% for error in field.errors %}
+            <p style="color:red;">
+                {{ field.label }} : {{ error }}
+            </p>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <p style="color:red;">{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    
+
+    <!-- Étudiant autocomplete -->
+    <div class="mb-3">
+        <label for="etudiant_autocomplete" class="form-label">Étudiant</label>
+        <input type="text" id="etudiant_autocomplete" class="form-control"
+               placeholder="Tapez le nom ou prénom">
+        <input type="hidden" name="etudiant" id="etudiant_id">
+    </div>
+
+    <!-- Médecin autocomplete -->
+    <div class="mb-3">
+        <label for="medecin_autocomplete" class="form-label">Médecin</label>
+        <input type="text" id="medecin_autocomplete" class="form-control"
+               placeholder="Tapez le nom ou prénom">
+        <input type="hidden" name="medecin" id="medecin_id">
+    </div>
+    
+    <!-- Autres champs -->
+    <div class="mb-3">
+        {{ form.date_rdv.label_tag }}
+        {{ form.date_rdv }}
+    </div>
+    <div class="mb-3">
+        {{ form.heure.label_tag }}{{ form.heure }}
+    </div>
+    <div class="mb-3">
+        {{ form.statut.label_tag }}{{ form.statut }}
+    </div>
+
+    <!-- Boutons -->
+        <button type="submit" class="btn btn-gradient px-4 py-2 mt-3">Enregistrer</button>
+        <a href="{% url 'rdv_list' %}" class="btn btn-secondary px-4 py-2 mt-3 ms-2">Retour à la liste</a>
+    </form>
+</div>
+
+<!-- Styles pour le bouton dégradé bleu -->
+<style>
+.btn-gradient {
+    background: linear-gradient(90deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #2a5298, #1e3c72);
+    color: white;
+}
+</style>
+</form>
+
+<!-- jQuery UI autocomplete -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+<script>
+$(function() {
+    function setupAutocomplete(inputId, hiddenId, url) {
+        $(inputId).autocomplete({
+            source: function(request, response) {
+                $.getJSON(url, { term: request.term }, function(data) {
+                    response($.map(data, function(item) {
+                        return { label: item.label, value: item.id }; 
+                    }));
+                });
+            },
+            minLength: 0,
+            select: function(event, ui) {
+                $(inputId).val(ui.item.label);   // texte affiché
+                $(hiddenId).val(ui.item.value);  // ID stocké
+                return false;
+            }
+        });
+
+        // Affiche la liste complète dès qu'on clique dans le champ
+        $(inputId).focus(function() {
+            $(this).autocomplete("search", "");
+        });
+    }
+
+    setupAutocomplete("#etudiant_autocomplete", "#etudiant_id", "{% url 'autocomplete_etudiant' %}");
+    setupAutocomplete("#medecin_autocomplete", "#medecin_id", "{% url 'autocomplete_medecin' %}");
+
+    // Préremplissage si édition
+    {% if form.instance.pk %}
+        $("#etudiant_autocomplete").val("{{ form.instance.etudiant.nom }} {{ form.instance.etudiant.prenom }}");
+        $("#etudiant_id").val("{{ form.instance.etudiant.id }}");
+
+        $("#medecin_autocomplete").val("{{ form.instance.medecin.nom }} {{ form.instance.medecin.prenom }}");
+        $("#medecin_id").val("{{ form.instance.medecin.id }}");
+    {% endif %}
+
+    // Désactiver samedi et dimanche dans le champ date
+    $("#id_date_rdv").attr("type", "date"); // s'assurer que c'est un input type date
+      {% if form.instance.pk %}
+  
+    $("#id_heure").val("{{ form.instance.heure|time:'H:i' }}");  // pour ChoiceField
+{% endif %}
+    // Bloquer les dates passées
+    {% if not form.instance.pk %}
+    const today = new Date().toISOString().split('T')[0];
+    $("#id_date_rdv").attr("min", today);
+{% endif %}
+});
+</script>
+
+
+{% endblock %}

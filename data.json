@@ -1,0 +1,814 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$kEdgMBaXKkThACjOCTCr1N$E1GrUUBqVTfS904qPleZ7MPbhSxydxfmXgM/31zFoio=",
+    "last_login": "2026-05-13T16:15:35.079",
+    "is_superuser": true,
+    "username": "abougarnmaissae",
+    "first_name": "",
+    "last_name": "",
+    "email": "maissaeabougarn@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-12-23T16:49:26.960",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "0un8kwhhhu1xr1lgxqcee9f1ngf6avji",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQAP9lz4ZAy7NH734DYdlFqoYmpT0Z_9006UGvM5N5Q0z7VuPeeY0zwQQKLr8MU35yOwQ9UrsvIi9tW2cURyJO28VtIX5dz_ZvUFOvMAE6pcpgyBJL53JgS94HjyipuKBHYzLjoIstwZBNLsuCbIKSRo1FZwmfL-6ROBg:1wNBJ9:o6gQd7wy4hapNMoPSzy7uUJqF9V0clkfEptJOjomRrc",
+    "expire_date": "2026-05-27T16:15:35.106"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "rccek4f43e3dtv4w0eodkf90318mvbnz",
+  "fields": {
+    "session_data": ".eJxVjEsOwjAMBe-SNYrsJsUpS_Y9Q-TELimgRupnhbg7VOoCtm9m3stE3tYSt0XnOIq5GDSn3y1xfui0A7nzdKs212mdx2R3xR50sX0VfV4P9--g8FK-dUPKQN436RyU2lYV_MCcPHYwsEDLISc3eEdM6EhCB0KIKAFyBkDz_gDfoDeH:1vgQ72:OZj1Ig7VVIMcrff19YIHrN9zTOvAAYA3npfO-5WRNmk",
+    "expire_date": "2026-01-29T17:22:20.203"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 1,
+  "fields": {
+    "nom": "Ahmed",
+    "prenom": "El Fassi",
+    "CIN": "T1234",
+    "CNE": "R142020",
+    "date_naissance": "2000-05-12",
+    "filiere": "API",
+    "niveau": "API1",
+    "sexe": "M",
+    "telephone": "0612345678",
+    "ville": "Casablanca"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 2,
+  "fields": {
+    "nom": "Fatima",
+    "prenom": "Zahra",
+    "CIN": "D5678",
+    "CNE": "CZ2020",
+    "date_naissance": "2001-03-21",
+    "filiere": "GI",
+    "niveau": "GI2",
+    "sexe": "F",
+    "telephone": "+212623456789",
+    "ville": "Rabat"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 3,
+  "fields": {
+    "nom": "Youssef",
+    "prenom": "Amrani",
+    "CIN": "G9988",
+    "CNE": "I2021",
+    "date_naissance": "2000-07-15",
+    "filiere": "GE",
+    "niveau": "GE1",
+    "sexe": "M",
+    "telephone": "0634567890",
+    "ville": "FÞs"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 4,
+  "fields": {
+    "nom": "Sara",
+    "prenom": "El Idrissi",
+    "CIN": "D3344",
+    "CNE": "CNESID2021",
+    "date_naissance": "2002-02-10",
+    "filiere": "IID",
+    "niveau": "IID3",
+    "sexe": "F",
+    "telephone": "0645678901",
+    "ville": "Marrakech"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 5,
+  "fields": {
+    "nom": "Mohamed",
+    "prenom": "El Khattabi",
+    "CIN": "Q7788",
+    "CNE": "R8020",
+    "date_naissance": "2001-09-05",
+    "filiere": "IRIC",
+    "niveau": "IRIC2",
+    "sexe": "M",
+    "telephone": "0756789012",
+    "ville": "Tanger"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 6,
+  "fields": {
+    "nom": "Laila",
+    "prenom": "Rifai",
+    "CIN": "A1122",
+    "CNE": "R2022",
+    "date_naissance": "2000-11-30",
+    "filiere": "MGSI",
+    "niveau": "MGSI1",
+    "sexe": "F",
+    "telephone": "0667890123",
+    "ville": "Agadir"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 7,
+  "fields": {
+    "nom": "Hassan",
+    "prenom": "Bennani",
+    "CIN": "B4455",
+    "CNE": "H2020",
+    "date_naissance": "2001-06-25",
+    "filiere": "GPEE",
+    "niveau": "GPEE3",
+    "sexe": "M",
+    "telephone": "0778901234",
+    "ville": "MeknÞs"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 8,
+  "fields": {
+    "nom": "Nora",
+    "prenom": "Chafik",
+    "CIN": "N5566",
+    "CNE": "E2021",
+    "date_naissance": "2000-08-18",
+    "filiere": "MASTER",
+    "niveau": "M1",
+    "sexe": "F",
+    "telephone": "+212689012345",
+    "ville": "Oujda"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 9,
+  "fields": {
+    "nom": "Rachid",
+    "prenom": "El Amrani",
+    "CIN": "A6677",
+    "CNE": "F2021",
+    "date_naissance": "2002-01-14",
+    "filiere": "GI",
+    "niveau": "GI3",
+    "sexe": "M",
+    "telephone": "0690123456",
+    "ville": "Kenitra"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 10,
+  "fields": {
+    "nom": "Imane",
+    "prenom": "Zouhir",
+    "CIN": "O8899",
+    "CNE": "R2020",
+    "date_naissance": "2001-04-09",
+    "filiere": "API",
+    "niveau": "API2",
+    "sexe": "F",
+    "telephone": "0701234567",
+    "ville": "Casablanca"
+  }
+},
+{
+  "model": "hopital.etudiant",
+  "pk": 11,
+  "fields": {
+    "nom": "maissae",
+    "prenom": "abougarn",
+    "CIN": "T335845",
+    "CNE": "R55888",
+    "date_naissance": "2005-12-02",
+    "filiere": "IID",
+    "niveau": "IID1",
+    "sexe": "F",
+    "telephone": "0633780663",
+    "ville": "Azrou"
+  }
+},
+{
+  "model": "hopital.medecin",
+  "pk": 1,
+  "fields": {
+    "nom": "Driss",
+    "prenom": "El Idrissi",
+    "specialite": "Cardiologie",
+    "telephone": "+33612735878",
+    "rdv_jr": 2,
+    "salaire": "10000.00"
+  }
+},
+{
+  "model": "hopital.medecin",
+  "pk": 2,
+  "fields": {
+    "nom": "Salma",
+    "prenom": "Chakib",
+    "specialite": "Dermatologie",
+    "telephone": "0622334455",
+    "rdv_jr": 4,
+    "salaire": "9000.00"
+  }
+},
+{
+  "model": "hopital.medecin",
+  "pk": 3,
+  "fields": {
+    "nom": "Yassine",
+    "prenom": "Benzekri",
+    "specialite": "PÚdiatrie",
+    "telephone": "0633445566",
+    "rdv_jr": 5,
+    "salaire": "11000.00"
+  }
+},
+{
+  "model": "hopital.medecin",
+  "pk": 4,
+  "fields": {
+    "nom": "Khalid",
+    "prenom": "Hassani",
+    "specialite": "Neurologie",
+    "telephone": "+212644556677",
+    "rdv_jr": 10,
+    "salaire": "12000.00"
+  }
+},
+{
+  "model": "hopital.medecin",
+  "pk": 5,
+  "fields": {
+    "nom": "Imane",
+    "prenom": "El Amrani",
+    "specialite": "GÚnÚraliste",
+    "telephone": "0655667788",
+    "rdv_jr": 1,
+    "salaire": "9500.00"
+  }
+},
+{
+  "model": "hopital.medecin",
+  "pk": 6,
+  "fields": {
+    "nom": "Omar",
+    "prenom": "Ziani",
+    "specialite": "OrthopÚdie",
+    "telephone": "0766778899",
+    "rdv_jr": 3,
+    "salaire": "10500.00"
+  }
+},
+{
+  "model": "hopital.medecin",
+  "pk": 7,
+  "fields": {
+    "nom": "Amina",
+    "prenom": "Rifai",
+    "specialite": "Ophtalmologie",
+    "telephone": "+33710831808",
+    "rdv_jr": 2,
+    "salaire": "9800.00"
+  }
+},
+{
+  "model": "hopital.dossiermedical",
+  "pk": 1,
+  "fields": {
+    "etudiant": 1,
+    "groupe_sanguin": "O+",
+    "allergies": "Allergie au latex",
+    "maladies_chroniques": "Maladies cardiaques",
+    "date_creation": "2026-01-08T00:07:27.554",
+    "couverture_medicale": "CNSS"
+  }
+},
+{
+  "model": "hopital.dossiermedical",
+  "pk": 2,
+  "fields": {
+    "etudiant": 2,
+    "groupe_sanguin": "B+",
+    "allergies": "",
+    "maladies_chroniques": "",
+    "date_creation": "2026-01-08T00:07:57.340",
+    "couverture_medicale": "AMO"
+  }
+},
+{
+  "model": "hopital.dossiermedical",
+  "pk": 3,
+  "fields": {
+    "etudiant": 3,
+    "groupe_sanguin": "O+",
+    "allergies": "Pollen",
+    "maladies_chroniques": "Polyarthrite rhumato´de",
+    "date_creation": "2026-01-08T00:09:52.169",
+    "couverture_medicale": "RAMED"
+  }
+},
+{
+  "model": "hopital.dossiermedical",
+  "pk": 4,
+  "fields": {
+    "etudiant": 4,
+    "groupe_sanguin": "AB+",
+    "allergies": "",
+    "maladies_chroniques": "Asthme",
+    "date_creation": "2026-01-08T00:10:27.401",
+    "couverture_medicale": "CNSS"
+  }
+},
+{
+  "model": "hopital.dossiermedical",
+  "pk": 5,
+  "fields": {
+    "etudiant": 5,
+    "groupe_sanguin": "A-",
+    "allergies": "Pollen",
+    "maladies_chroniques": "DiabÞte",
+    "date_creation": "2026-01-08T00:12:21.254",
+    "couverture_medicale": "Atlanta"
+  }
+},
+{
+  "model": "hopital.dossiermedical",
+  "pk": 6,
+  "fields": {
+    "etudiant": 6,
+    "groupe_sanguin": "B-",
+    "allergies": "",
+    "maladies_chroniques": "Allergie alimentaire",
+    "date_creation": "2026-01-08T00:12:56.353",
+    "couverture_medicale": "Wafa Assurance"
+  }
+},
+{
+  "model": "hopital.dossiermedical",
+  "pk": 7,
+  "fields": {
+    "etudiant": 7,
+    "groupe_sanguin": "O-",
+    "allergies": "",
+    "maladies_chroniques": "",
+    "date_creation": "2026-01-08T00:13:25.736",
+    "couverture_medicale": "Saham"
+  }
+},
+{
+  "model": "hopital.dossiermedical",
+  "pk": 9,
+  "fields": {
+    "etudiant": 11,
+    "groupe_sanguin": "A-",
+    "allergies": "",
+    "maladies_chroniques": "",
+    "date_creation": "2026-01-15T17:26:15.267",
+    "couverture_medicale": "MCMA"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 1,
+  "fields": {
+    "etudiant": 4,
+    "medecin": 1,
+    "date_rdv": "2026-01-13",
+    "heure": "10:00:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 2,
+  "fields": {
+    "etudiant": 7,
+    "medecin": 5,
+    "date_rdv": "2026-01-08",
+    "heure": "14:00:00",
+    "statut": "effectuÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 3,
+  "fields": {
+    "etudiant": 4,
+    "medecin": 2,
+    "date_rdv": "2026-01-08",
+    "heure": "12:00:00",
+    "statut": "effectuÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 4,
+  "fields": {
+    "etudiant": 6,
+    "medecin": 6,
+    "date_rdv": "2026-01-08",
+    "heure": "14:30:00",
+    "statut": "effectuÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 5,
+  "fields": {
+    "etudiant": 5,
+    "medecin": 1,
+    "date_rdv": "2026-01-13",
+    "heure": "15:30:00",
+    "statut": "effectuÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 6,
+  "fields": {
+    "etudiant": 3,
+    "medecin": 3,
+    "date_rdv": "2026-01-12",
+    "heure": "16:00:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 7,
+  "fields": {
+    "etudiant": 6,
+    "medecin": 4,
+    "date_rdv": "2026-01-08",
+    "heure": "09:00:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 8,
+  "fields": {
+    "etudiant": 3,
+    "medecin": 3,
+    "date_rdv": "2026-01-08",
+    "heure": "15:30:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 9,
+  "fields": {
+    "etudiant": 5,
+    "medecin": 7,
+    "date_rdv": "2026-01-08",
+    "heure": "12:00:00",
+    "statut": "effectuÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 10,
+  "fields": {
+    "etudiant": 4,
+    "medecin": 6,
+    "date_rdv": "2026-01-08",
+    "heure": "11:00:00",
+    "statut": "effectuÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 11,
+  "fields": {
+    "etudiant": 4,
+    "medecin": 3,
+    "date_rdv": "2026-01-19",
+    "heure": "09:00:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 12,
+  "fields": {
+    "etudiant": 2,
+    "medecin": 2,
+    "date_rdv": "2026-01-16",
+    "heure": "11:00:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 13,
+  "fields": {
+    "etudiant": 2,
+    "medecin": 3,
+    "date_rdv": "2026-01-19",
+    "heure": "10:30:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 14,
+  "fields": {
+    "etudiant": 5,
+    "medecin": 2,
+    "date_rdv": "2026-01-19",
+    "heure": "16:00:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 15,
+  "fields": {
+    "etudiant": 1,
+    "medecin": 1,
+    "date_rdv": "2026-01-16",
+    "heure": "09:00:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 16,
+  "fields": {
+    "etudiant": 5,
+    "medecin": 1,
+    "date_rdv": "2026-01-16",
+    "heure": "10:00:00",
+    "statut": "ratÚ"
+  }
+},
+{
+  "model": "hopital.rendezvous",
+  "pk": 17,
+  "fields": {
+    "etudiant": 11,
+    "medecin": 2,
+    "date_rdv": "2026-01-15",
+    "heure": "16:00:00",
+    "statut": "effectuÚ"
+  }
+},
+{
+  "model": "hopital.consultation",
+  "pk": 1,
+  "fields": {
+    "dossier": 7,
+    "medecin": 5,
+    "rdv": 2,
+    "diagnostic": "Tout est normal"
+  }
+},
+{
+  "model": "hopital.consultation",
+  "pk": 2,
+  "fields": {
+    "dossier": 6,
+    "medecin": 6,
+    "rdv": 4,
+    "diagnostic": "FiÞvre lÚgÞre"
+  }
+},
+{
+  "model": "hopital.consultation",
+  "pk": 3,
+  "fields": {
+    "dossier": 4,
+    "medecin": 2,
+    "rdv": 3,
+    "diagnostic": "Toux chronique"
+  }
+},
+{
+  "model": "hopital.consultation",
+  "pk": 4,
+  "fields": {
+    "dossier": 5,
+    "medecin": 7,
+    "rdv": 9,
+    "diagnostic": "Allergies saisonniÞres"
+  }
+},
+{
+  "model": "hopital.consultation",
+  "pk": 5,
+  "fields": {
+    "dossier": 5,
+    "medecin": 1,
+    "rdv": 5,
+    "diagnostic": ""
+  }
+},
+{
+  "model": "hopital.consultation",
+  "pk": 6,
+  "fields": {
+    "dossier": 4,
+    "medecin": 6,
+    "rdv": 10,
+    "diagnostic": ""
+  }
+},
+{
+  "model": "hopital.consultation",
+  "pk": 7,
+  "fields": {
+    "dossier": 9,
+    "medecin": 2,
+    "rdv": 17,
+    "diagnostic": ""
+  }
+},
+{
+  "model": "hopital.medicament",
+  "pk": 1,
+  "fields": {
+    "nom_medicament": "ParacÚtamol",
+    "forme": "ComprimÚ"
+  }
+},
+{
+  "model": "hopital.medicament",
+  "pk": 2,
+  "fields": {
+    "nom_medicament": "IbuprofÞne",
+    "forme": "GÚlule"
+  }
+},
+{
+  "model": "hopital.medicament",
+  "pk": 3,
+  "fields": {
+    "nom_medicament": "Amoxicilline",
+    "forme": "Capsule"
+  }
+},
+{
+  "model": "hopital.medicament",
+  "pk": 4,
+  "fields": {
+    "nom_medicament": "Ventoline",
+    "forme": "Spray"
+  }
+},
+{
+  "model": "hopital.medicament",
+  "pk": 5,
+  "fields": {
+    "nom_medicament": "Doliprane",
+    "forme": "ComprimÚ"
+  }
+},
+{
+  "model": "hopital.medicament",
+  "pk": 6,
+  "fields": {
+    "nom_medicament": "CÚfuroxime",
+    "forme": "GÚlule"
+  }
+},
+{
+  "model": "hopital.prescription",
+  "pk": 1,
+  "fields": {
+    "consultation": 1,
+    "medicament": 1,
+    "duree": "5 jours"
+  }
+},
+{
+  "model": "hopital.prescription",
+  "pk": 2,
+  "fields": {
+    "consultation": 2,
+    "medicament": 4,
+    "duree": "1 mois"
+  }
+},
+{
+  "model": "hopital.prescription",
+  "pk": 3,
+  "fields": {
+    "consultation": 4,
+    "medicament": 3,
+    "duree": "2 mois"
+  }
+},
+{
+  "model": "hopital.prescription",
+  "pk": 4,
+  "fields": {
+    "consultation": 3,
+    "medicament": 2,
+    "duree": "15 jours"
+  }
+},
+{
+  "model": "hopital.vaccination",
+  "pk": 1,
+  "fields": {
+    "nom_vaccin": "BCG",
+    "date_vaccin": "2026-01-01T10:00:00",
+    "rappel": "6 mois",
+    "dossier": 1
+  }
+},
+{
+  "model": "hopital.vaccination",
+  "pk": 2,
+  "fields": {
+    "nom_vaccin": "HÚpatite B",
+    "date_vaccin": "2026-01-02T11:00:00",
+    "rappel": "6 mois",
+    "dossier": 2
+  }
+},
+{
+  "model": "hopital.vaccination",
+  "pk": 3,
+  "fields": {
+    "nom_vaccin": "DT-Polio",
+    "date_vaccin": "2026-01-03T09:00:00",
+    "rappel": "6 mois",
+    "dossier": 3
+  }
+},
+{
+  "model": "hopital.vaccination",
+  "pk": 4,
+  "fields": {
+    "nom_vaccin": "ROR",
+    "date_vaccin": "2026-01-04T10:30:00",
+    "rappel": "6 mois",
+    "dossier": 4
+  }
+},
+{
+  "model": "hopital.vaccination",
+  "pk": 5,
+  "fields": {
+    "nom_vaccin": "BCG",
+    "date_vaccin": "2026-01-05T09:15:00",
+    "rappel": "6 mois",
+    "dossier": 5
+  }
+},
+{
+  "model": "hopital.vaccination",
+  "pk": 6,
+  "fields": {
+    "nom_vaccin": "HÚpatite B",
+    "date_vaccin": "2026-01-06T11:45:00",
+    "rappel": "6 mois",
+    "dossier": 6
+  }
+},
+{
+  "model": "hopital.vaccination",
+  "pk": 7,
+  "fields": {
+    "nom_vaccin": "anan",
+    "date_vaccin": "2026-01-08T11:40:46.461",
+    "rappel": "",
+    "dossier": 1
+  }
+},
+{
+  "model": "hopital.vaccination",
+  "pk": 8,
+  "fields": {
+    "nom_vaccin": "arbert",
+    "date_vaccin": "2026-01-08T18:59:39.146",
+    "rappel": "",
+    "dossier": 4
+  }
+}
+]
+

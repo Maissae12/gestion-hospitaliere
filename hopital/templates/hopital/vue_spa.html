@@ -1,0 +1,913 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediGest – Vue.js</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-width: 240px;
+            --primary: #0b3d91;
+            --primary-dark: #072d6b;
+            --accent: #1e88e5;
+        }
+
+        body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; }
+
+        /* ── Sidebar ── */
+        #sidebar {
+            position: fixed; top: 0; left: 0;
+            width: var(--sidebar-width); height: 100vh;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff; display: flex; flex-direction: column;
+            z-index: 100; transition: transform 0.3s;
+        }
+        #sidebar .brand {
+            padding: 20px 18px 14px;
+            font-size: 1.3rem; font-weight: 700;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; gap: 8px;
+        }
+        #sidebar nav { flex: 1; overflow-y: auto; padding: 10px 0; }
+        #sidebar nav .nav-section {
+            font-size: .72rem; text-transform: uppercase;
+            letter-spacing: .08em; color: rgba(255,255,255,.5);
+            padding: 14px 18px 4px;
+        }
+        #sidebar nav a {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 18px; color: rgba(255,255,255,.85);
+            text-decoration: none; font-size: .9rem;
+            border-radius: 6px; margin: 1px 8px;
+            transition: background .2s;
+        }
+        #sidebar nav a:hover, #sidebar nav a.active {
+            background: rgba(255,255,255,.18); color: #fff;
+        }
+        #sidebar .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,.15);
+            padding: 14px 18px;
+        }
+        #sidebar .sidebar-footer a {
+            color: rgba(255,255,255,.7); font-size: .85rem;
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+        #sidebar .sidebar-footer a:hover { color: #fff; }
+
+        /* ── Main content ── */
+        #main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+        #topbar {
+            background: #fff; border-bottom: 1px solid #dee2e6;
+            padding: 12px 24px; display: flex;
+            align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+        }
+        #topbar .page-title { font-weight: 600; font-size: 1.1rem; color: var(--primary); }
+        #page-body { padding: 28px 28px; flex: 1; }
+
+        /* ── Toast notifications ── */
+        #toast-container {
+            position: fixed; top: 16px; right: 16px;
+            z-index: 9999; display: flex; flex-direction: column; gap: 8px;
+        }
+        .toast-msg {
+            min-width: 260px; padding: 12px 18px;
+            border-radius: 8px; color: #fff; font-size: .9rem;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,.18);
+            animation: slideIn .3s ease;
+        }
+        .toast-success { background: #198754; }
+        .toast-error   { background: #dc3545; }
+        .toast-info    { background: #0d6efd; }
+        @keyframes slideIn { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* ── Cards & tables ── */
+        .stat-card {
+            background: #fff; border-radius: 12px;
+            padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,.07);
+            border-left: 4px solid var(--accent);
+        }
+        .stat-card .stat-value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+        .stat-card .stat-label { font-size: .85rem; color: #6c757d; }
+        .card-section {
+            background: #fff; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.07);
+            overflow: hidden; margin-bottom: 28px;
+        }
+        .card-section .card-header-custom {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff; padding: 14px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-section .card-header-custom h5 { margin: 0; font-size: 1rem; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+        th {
+            background: #f8f9fa; color: var(--primary);
+            font-weight: 600; padding: 10px 14px;
+            border-bottom: 2px solid #dee2e6; white-space: nowrap;
+        }
+        td { padding: 9px 14px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+        tr:hover td { background: #f8fbff; }
+
+        /* ── Modal ── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.45); z-index: 1050;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-box {
+            background: #fff; border-radius: 12px;
+            width: 96%; max-width: 560px; max-height: 88vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 40px rgba(0,0,0,.25);
+        }
+        .modal-box .modal-head {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff; padding: 14px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-radius: 12px 12px 0 0;
+        }
+        .modal-box .modal-head h5 { margin: 0; font-size: 1rem; }
+        .modal-box .modal-body-inner { padding: 22px; }
+        .modal-box .modal-footer-inner {
+            padding: 14px 22px;
+            border-top: 1px solid #dee2e6;
+            display: flex; justify-content: flex-end; gap: 10px;
+        }
+
+        /* ── Form controls ── */
+        .form-group { margin-bottom: 14px; }
+        .form-group label { font-size: .85rem; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
+        .form-control, .form-select {
+            border-radius: 6px; border: 1px solid #ced4da;
+            padding: 8px 12px; font-size: .9rem; width: 100%;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent); outline: none;
+            box-shadow: 0 0 0 3px rgba(30,136,229,.15);
+        }
+        .invalid-feedback { color: #dc3545; font-size: .8rem; margin-top: 3px; }
+        .is-invalid { border-color: #dc3545 !important; }
+
+        /* Badges statut */
+        .badge-prevu   { background: #ffc107; color: #333; }
+        .badge-effectue{ background: #198754; color: #fff; }
+        .badge-rate    { background: #dc3545; color: #fff; }
+        .status-badge {
+            padding: 3px 10px; border-radius: 20px;
+            font-size: .78rem; font-weight: 600;
+        }
+
+        /* Loading spinner */
+        .spinner-wrap {
+            display: flex; align-items: center; justify-content: center;
+            padding: 48px; color: var(--accent);
+        }
+
+        /* Search bar */
+        .search-bar { position: relative; }
+        .search-bar i {
+            position: absolute; left: 10px; top: 50%;
+            transform: translateY(-50%); color: #aaa;
+        }
+        .search-bar input { padding-left: 32px; }
+
+        @media (max-width: 768px) {
+            #sidebar { transform: translateX(-100%); }
+            #sidebar.open { transform: translateX(0); }
+            #main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ✅ Variable Django injectée AVANT verbatim -->
+<script>
+    const DJANGO_USERNAME = "{{ request.user.username }}";
+</script>
+
+{% verbatim %}
+<div id="app">
+
+    <!-- ═══════════════ TOAST CONTAINER ═══════════════ -->
+    <div id="toast-container">
+        <div v-for="t in toasts" :key="t.id"
+             :class="['toast-msg', 'toast-' + t.type]">
+            <i :class="t.type === 'success' ? 'bi bi-check-circle-fill'
+                      : t.type === 'error'   ? 'bi bi-x-circle-fill'
+                      : 'bi bi-info-circle-fill'"></i>
+            {{ t.message }}
+        </div>
+    </div>
+
+    <!-- ═══════════════ SIDEBAR ═══════════════ -->
+    <div id="sidebar" :class="{ open: sidebarOpen }">
+        <div class="brand">
+            <i class="bi bi-hospital"></i> MediGest
+        </div>
+        <nav>
+            <div class="nav-section">Principal</div>
+            <a href="#" :class="{ active: page === 'dashboard' }" @click.prevent="navigate('dashboard')">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+
+            <div class="nav-section">Gestion</div>
+            <a href="#" :class="{ active: page === 'etudiants' }" @click.prevent="navigate('etudiants')">
+                <i class="bi bi-people"></i> Étudiants
+            </a>
+            <a href="#" :class="{ active: page === 'medecins' }" @click.prevent="navigate('medecins')">
+                <i class="bi bi-person-badge"></i> Médecins
+            </a>
+            <a href="#" :class="{ active: page === 'dossiers' }" @click.prevent="navigate('dossiers')">
+                <i class="bi bi-folder2-open"></i> Dossiers médicaux
+            </a>
+            <a href="#" :class="{ active: page === 'rendezvous' }" @click.prevent="navigate('rendezvous')">
+                <i class="bi bi-calendar-check"></i> Rendez-vous
+            </a>
+            <a href="#" :class="{ active: page === 'consultations' }" @click.prevent="navigate('consultations')">
+                <i class="bi bi-clipboard2-pulse"></i> Consultations
+            </a>
+            <a href="#" :class="{ active: page === 'medicaments' }" @click.prevent="navigate('medicaments')">
+                <i class="bi bi-capsule"></i> Médicaments
+            </a>
+            <a href="#" :class="{ active: page === 'prescriptions' }" @click.prevent="navigate('prescriptions')">
+                <i class="bi bi-file-earmark-medical"></i> Prescriptions
+            </a>
+            <a href="#" :class="{ active: page === 'vaccinations' }" @click.prevent="navigate('vaccinations')">
+                <i class="bi bi-shield-plus"></i> Vaccinations
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/hopital/">
+                <i class="bi bi-arrow-left-circle"></i> Interface classique
+            </a>
+        </div>
+    </div>
+
+    <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+    <div id="main-content">
+
+        <!-- Topbar -->
+        <div id="topbar">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm btn-outline-secondary d-md-none"
+                        @click="sidebarOpen = !sidebarOpen">
+                    <i class="bi bi-list"></i>
+                </button>
+                <span class="page-title">{{ pageTitle }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">
+                    <i class="bi bi-person-circle me-1"></i>{{ username }}
+                </span>
+                <a href="/logout/" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-box-arrow-right"></i> Déconnexion
+                </a>
+            </div>
+        </div>
+
+        <!-- Page body -->
+        <div id="page-body">
+
+            <!-- ── DASHBOARD ── -->
+            <div v-if="page === 'dashboard'">
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3" v-for="s in stats" :key="s.label">
+                        <div class="stat-card">
+                            <div class="stat-value">{{ s.count }}</div>
+                            <div class="stat-label">
+                                <i :class="s.icon + ' me-1'"></i>{{ s.label }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-info d-flex align-items-center gap-2">
+                    <i class="bi bi-info-circle-fill fs-5"></i>
+                    <span>Utilisez le menu latéral pour gérer les données via l'API REST.</span>
+                </div>
+            </div>
+
+            <!-- ── CRUD PAGE (générique) ── -->
+            <div v-else>
+                <!-- Toolbar -->
+                <div class="d-flex flex-wrap gap-2 mb-3 align-items-center justify-content-between">
+                    <div class="search-bar" style="min-width:220px">
+                        <i class="bi bi-search"></i>
+                        <input class="form-control" placeholder="Rechercher…"
+                               v-model="search" @input="fetchData">
+                    </div>
+                    <button class="btn btn-primary btn-sm" @click="openCreate">
+                        <i class="bi bi-plus-lg me-1"></i> Ajouter
+                    </button>
+                </div>
+
+                <!-- Loading -->
+                <div v-if="loading" class="spinner-wrap">
+                    <div class="spinner-border" role="status"></div>
+                </div>
+
+                <!-- Error -->
+                <div v-else-if="fetchError" class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ fetchError }}
+                </div>
+
+                <!-- Table -->
+                <div v-else class="card-section">
+                    <div class="card-header-custom">
+                        <h5><i :class="currentConfig.icon + ' me-2'"></i>{{ pageTitle }}</h5>
+                        <small>{{ items.length }} enregistrement(s)</small>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th v-for="col in currentConfig.columns" :key="col.key">{{ col.label }}</th>
+                                    <th style="width:120px">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-if="items.length === 0">
+                                    <td :colspan="currentConfig.columns.length + 1" class="text-center text-muted py-4">
+                                        Aucun enregistrement trouvé.
+                                    </td>
+                                </tr>
+                                <tr v-for="item in items" :key="item.id">
+                                    <td v-for="col in currentConfig.columns" :key="col.key">
+                                        <span v-if="col.key === 'statut'" :class="['status-badge', statutClass(item.statut)]">
+                                            {{ item.statut }}
+                                        </span>
+                                        <span v-else>{{ getField(item, col.key) }}</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-1"
+                                                @click="openEdit(item)" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                                @click="confirmDelete(item)" title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center mt-2" v-if="totalPages > 1">
+                    <small class="text-muted">Page {{ currentPage }} / {{ totalPages }}</small>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-sm btn-outline-secondary"
+                                :disabled="currentPage <= 1" @click="goPage(currentPage - 1)">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary"
+                                :disabled="currentPage >= totalPages" @click="goPage(currentPage + 1)">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ MODAL CREATE/EDIT ═══════════════ -->
+    <div class="modal-overlay" v-if="showModal" @click.self="closeModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h5><i class="bi bi-pencil-square me-2"></i>{{ modalTitle }}</h5>
+                <button class="btn btn-sm btn-link text-white p-0" @click="closeModal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body-inner">
+                <div v-for="field in currentConfig.fields" :key="field.key" class="form-group">
+                    <label>{{ field.label }}
+                        <span v-if="field.required" class="text-danger">*</span>
+                    </label>
+
+                    <!-- Select -->
+                    <select v-if="field.type === 'select'" class="form-select"
+                            :class="{ 'is-invalid': formErrors[field.key] }"
+                            v-model="formData[field.key]">
+                        <option value="">-- Sélectionner --</option>
+                        <option v-for="opt in field.options" :key="opt.value" :value="opt.value">
+                            {{ opt.label }}
+                        </option>
+                    </select>
+
+                    <!-- Textarea -->
+                    <textarea v-else-if="field.type === 'textarea'" class="form-control"
+                              :class="{ 'is-invalid': formErrors[field.key] }"
+                              v-model="formData[field.key]" rows="3"></textarea>
+
+                    <!-- Input -->
+                    <input v-else class="form-control"
+                           :class="{ 'is-invalid': formErrors[field.key] }"
+                           :type="field.type || 'text'"
+                           :placeholder="field.placeholder || ''"
+                           v-model="formData[field.key]">
+
+                    <div class="invalid-feedback" v-if="formErrors[field.key]">
+                        {{ formErrors[field.key] }}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer-inner">
+                <button class="btn btn-secondary btn-sm" @click="closeModal">Annuler</button>
+                <button class="btn btn-primary btn-sm" @click="submitForm" :disabled="saving">
+                    <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
+                    {{ editingItem ? 'Enregistrer' : 'Créer' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ MODAL CONFIRM DELETE ═══════════════ -->
+    <div class="modal-overlay" v-if="showDeleteModal" @click.self="showDeleteModal = false">
+        <div class="modal-box" style="max-width:420px">
+            <div class="modal-head" style="background: linear-gradient(90deg,#c62828,#e53935)">
+                <h5><i class="bi bi-exclamation-triangle me-2"></i>Confirmer la suppression</h5>
+                <button class="btn btn-sm btn-link text-white p-0" @click="showDeleteModal = false">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body-inner">
+                <p>Voulez-vous vraiment supprimer cet enregistrement ?
+                    <strong>Cette action est irréversible.</strong>
+                </p>
+            </div>
+            <div class="modal-footer-inner">
+                <button class="btn btn-secondary btn-sm" @click="showDeleteModal = false">Annuler</button>
+                <button class="btn btn-danger btn-sm" @click="deleteItem" :disabled="saving">
+                    <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div><!-- #app -->
+
+<!-- Vue 3 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
+<!-- Axios CDN -->
+<script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ── CSRF helper ──
+function getCookie(name) {
+    let val = null;
+    document.cookie.split(';').forEach(c => {
+        c = c.trim();
+        if (c.startsWith(name + '=')) val = decodeURIComponent(c.slice(name.length + 1));
+    });
+    return val;
+}
+axios.defaults.headers.common['X-CSRFToken'] = getCookie('csrftoken');
+axios.defaults.withCredentials = true;
+
+// ── Config des entités ──
+const ENTITIES = {
+    etudiants: {
+        label: 'Étudiants', icon: 'bi bi-people',
+        endpoint: '/api/etudiants/',
+        columns: [
+            { key: 'id',     label: 'ID' },
+            { key: 'nom',    label: 'Nom' },
+            { key: 'prenom', label: 'Prénom' },
+            { key: 'CIN',    label: 'CIN' },
+            { key: 'CNE',    label: 'CNE' },
+            { key: 'filiere',label: 'Filière' },
+            { key: 'niveau', label: 'Niveau' },
+            { key: 'sexe',   label: 'Sexe' },
+            { key: 'ville',  label: 'Ville' },
+            { key: 'telephone', label: 'Téléphone' },
+        ],
+        fields: [
+            { key: 'nom',    label: 'Nom',    required: true },
+            { key: 'prenom', label: 'Prénom', required: true },
+            { key: 'CIN',    label: 'CIN',    required: true },
+            { key: 'CNE',    label: 'CNE',    required: true },
+            { key: 'date_naissance', label: 'Date de naissance', type: 'date', required: true },
+            { key: 'filiere', label: 'Filière', type: 'select', required: true,
+              options: ['API','GI','GE','IID','IRIC','MGSI','GPEE','MASTER'].map(v=>({value:v,label:v})) },
+            { key: 'niveau', label: 'Niveau', type: 'select', required: true,
+              options: ['API1','API2','GI1','GI2','GI3','GE1','GE2','GE3','IID1','IID2','IID3',
+                        'MGSI1','MGSI2','IRIC1','IRIC2','IRIC3','GPEE1','GPEE2','GPEE3','M1','M2'].map(v=>({value:v,label:v})) },
+            { key: 'sexe', label: 'Sexe', type: 'select', required: true,
+              options: [{value:'M',label:'M'},{value:'F',label:'F'}] },
+            { key: 'telephone', label: 'Téléphone', required: true, placeholder: '0612345678' },
+            { key: 'ville', label: 'Ville', type: 'select', required: true,
+              options: ['Agadir','Beni Mellal','Casablanca','Fès','Khouribga','Marrakech',
+                        'Meknès','Oujda','Rabat','Salé','Tanger','Tétouan','Autre'].map(v=>({value:v,label:v})) },
+        ]
+    },
+    medecins: {
+        label: 'Médecins', icon: 'bi bi-person-badge',
+        endpoint: '/api/medecins/',
+        columns: [
+            { key: 'id',         label: 'ID' },
+            { key: 'nom',        label: 'Nom' },
+            { key: 'prenom',     label: 'Prénom' },
+            { key: 'specialite', label: 'Spécialité' },
+            { key: 'telephone',  label: 'Téléphone' },
+            { key: 'rdv_jr',     label: 'RDV/Jour' },
+            { key: 'salaire',    label: 'Salaire (DH)' },
+        ],
+        fields: [
+            { key: 'nom',        label: 'Nom',        required: true },
+            { key: 'prenom',     label: 'Prénom',     required: true },
+            { key: 'specialite', label: 'Spécialité', required: true },
+            { key: 'telephone',  label: 'Téléphone',  required: true, placeholder: '0612345678' },
+            { key: 'rdv_jr',     label: 'RDV/Jour',   type: 'number', required: true },
+            { key: 'salaire',    label: 'Salaire (DH)', type: 'number', required: true },
+        ]
+    },
+    dossiers: {
+        label: 'Dossiers médicaux', icon: 'bi bi-folder2-open',
+        endpoint: '/api/dossiers/',
+        columns: [
+            { key: 'id',              label: 'ID' },
+            { key: 'etudiant_nom',    label: 'Étudiant' },
+            { key: 'groupe_sanguin',  label: 'Groupe sanguin' },
+            { key: 'couverture_medicale', label: 'Couverture' },
+            { key: 'allergies',       label: 'Allergies' },
+        ],
+        fields: [
+            { key: 'etudiant',         label: 'ID Étudiant', type: 'number', required: true },
+            { key: 'groupe_sanguin',   label: 'Groupe sanguin', type: 'select', required: true,
+              options: ['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(v=>({value:v,label:v})) },
+            { key: 'couverture_medicale', label: 'Couverture médicale', type: 'select',
+              options: ['CNSS','AMO','RAMED','CNOPS','Atlanta','Wafa Assurance','RMA','AXA','Allianz','Saham','Autre'].map(v=>({value:v,label:v})) },
+            { key: 'allergies',           label: 'Allergies', type: 'textarea' },
+            { key: 'maladies_chroniques', label: 'Maladies chroniques', type: 'textarea' },
+        ]
+    },
+    rendezvous: {
+        label: 'Rendez-vous', icon: 'bi bi-calendar-check',
+        endpoint: '/api/rendezvous/',
+        columns: [
+            { key: 'id',           label: 'ID' },
+            { key: 'etudiant_nom', label: 'Étudiant' },
+            { key: 'medecin_nom',  label: 'Médecin' },
+            { key: 'date_rdv',     label: 'Date' },
+            { key: 'heure',        label: 'Heure' },
+            { key: 'statut',       label: 'Statut' },
+        ],
+        fields: [
+            { key: 'etudiant', label: 'ID Étudiant', type: 'number', required: true },
+            { key: 'medecin',  label: 'ID Médecin',  type: 'number', required: true },
+            { key: 'date_rdv', label: 'Date',   type: 'date',  required: true },
+            { key: 'heure',    label: 'Heure',  type: 'select', required: true,
+              options: ['09:00','09:30','10:00','10:30','11:00','11:30','12:00',
+                        '14:00','14:30','15:00','15:30','16:00','16:30','17:00'].map(v=>({value:v,label:v})) },
+            { key: 'statut', label: 'Statut', type: 'select',
+              options: [{value:'prévu',label:'Prévu'},{value:'effectué',label:'Effectué'},{value:'raté',label:'Raté'}] },
+        ]
+    },
+    consultations: {
+        label: 'Consultations', icon: 'bi bi-clipboard2-pulse',
+        endpoint: '/api/consultations/',
+        columns: [
+            { key: 'id',           label: 'ID' },
+            { key: 'etudiant_nom', label: 'Étudiant' },
+            { key: 'medecin_nom',  label: 'Médecin' },
+            { key: 'date_rdv',     label: 'Date RDV' },
+            { key: 'diagnostic',   label: 'Diagnostic' },
+        ],
+        fields: [
+            { key: 'dossier',    label: 'ID Dossier médical', type: 'number', required: true },
+            { key: 'medecin',    label: 'ID Médecin',         type: 'number', required: true },
+            { key: 'rdv',        label: 'ID Rendez-vous',     type: 'number', required: true },
+            { key: 'diagnostic', label: 'Diagnostic', type: 'textarea' },
+        ]
+    },
+    medicaments: {
+        label: 'Médicaments', icon: 'bi bi-capsule',
+        endpoint: '/api/medicaments/',
+        columns: [
+            { key: 'id',             label: 'ID' },
+            { key: 'nom_medicament', label: 'Nom' },
+            { key: 'forme',          label: 'Forme' },
+        ],
+        fields: [
+            { key: 'nom_medicament', label: 'Nom du médicament', required: true },
+            { key: 'forme', label: 'Forme', type: 'select', required: true,
+              options: ['Comprimé','Gélule','Solution','Sirop','Suspension','Capsule','Injection',
+                        'Gel','Crème','Pommade','Suppositoire','Patch','Spray','Émulsion','Poudre'].map(v=>({value:v,label:v})) },
+        ]
+    },
+    prescriptions: {
+        label: 'Prescriptions', icon: 'bi bi-file-earmark-medical',
+        endpoint: '/api/prescriptions/',
+        columns: [
+            { key: 'id',            label: 'ID' },
+            { key: 'etudiant_nom',  label: 'Étudiant' },
+            { key: 'medicament_nom',label: 'Médicament' },
+            { key: 'duree',         label: 'Durée' },
+        ],
+        fields: [
+            { key: 'consultation', label: 'ID Consultation', type: 'number', required: true },
+            { key: 'medicament',   label: 'ID Médicament',   type: 'number', required: true },
+            { key: 'duree',        label: 'Durée (ex: 7 jours)' },
+        ]
+    },
+    vaccinations: {
+        label: 'Vaccinations', icon: 'bi bi-shield-plus',
+        endpoint: '/api/vaccinations/',
+        columns: [
+            { key: 'id',          label: 'ID' },
+            { key: 'etudiant_nom',label: 'Étudiant' },
+            { key: 'nom_vaccin',  label: 'Vaccin' },
+            { key: 'rappel',      label: 'Rappel' },
+        ],
+        fields: [
+            { key: 'dossier',   label: 'ID Dossier médical', type: 'number', required: true },
+            { key: 'nom_vaccin',label: 'Nom du vaccin', required: true },
+            { key: 'rappel',    label: 'Rappel' },
+        ]
+    },
+};
+
+// ── Vue App ──
+const { createApp, ref, computed, onMounted } = Vue;
+
+createApp({
+    setup() {
+        // ── State ──
+        const page         = ref('dashboard');
+        const sidebarOpen  = ref(false);
+        const items        = ref([]);
+        const loading      = ref(false);
+        const fetchError   = ref('');
+        const saving       = ref(false);
+        const search       = ref('');
+        const currentPage  = ref(1);
+        const totalPages   = ref(1);
+        const toasts       = ref([]);
+
+        // Modal create/edit
+        const showModal    = ref(false);
+        const editingItem  = ref(null);
+        const formData     = ref({});
+        const formErrors   = ref({});
+
+        // Modal delete
+        const showDeleteModal = ref(false);
+        const deletingItem    = ref(null);
+
+        // Dashboard stats
+        const stats = ref([
+            { label: 'Étudiants',    count: '…', icon: 'bi bi-people' },
+            { label: 'Médecins',     count: '…', icon: 'bi bi-person-badge' },
+            { label: 'Dossiers',     count: '…', icon: 'bi bi-folder2-open' },
+            { label: 'Rendez-vous',  count: '…', icon: 'bi bi-calendar-check' },
+            { label: 'Consultations',count: '…', icon: 'bi bi-clipboard2-pulse' },
+            { label: 'Médicaments',  count: '…', icon: 'bi bi-capsule' },
+            { label: 'Prescriptions',count: '…', icon: 'bi bi-file-earmark-medical' },
+            { label: 'Vaccinations', count: '…', icon: 'bi bi-shield-plus' },
+        ]);
+
+        const username = ref(DJANGO_USERNAME);
+
+        // ── Computed ──
+        const currentConfig = computed(() => ENTITIES[page.value] || {});
+        const pageTitle = computed(() => {
+            if (page.value === 'dashboard') return 'Dashboard';
+            return currentConfig.value.label || '';
+        });
+        const modalTitle = computed(() =>
+            editingItem.value ? `Modifier ${currentConfig.value.label?.slice(0,-1) || ''}` : `Ajouter ${currentConfig.value.label?.slice(0,-1) || ''}`
+        );
+
+        // ── Helpers ──
+        function getField(item, key) {
+            if (key.includes('.')) {
+                return key.split('.').reduce((o, k) => o?.[k], item) ?? '—';
+            }
+            const val = item[key];
+            if (val === null || val === undefined || val === '') return '—';
+            return val;
+        }
+
+        function statutClass(s) {
+            if (s === 'prévu')    return 'badge-prevu';
+            if (s === 'effectué') return 'badge-effectue';
+            if (s === 'raté')     return 'badge-rate';
+            return '';
+        }
+
+        function toast(message, type = 'success') {
+            const id = Date.now();
+            toasts.value.push({ id, message, type });
+            setTimeout(() => {
+                toasts.value = toasts.value.filter(t => t.id !== id);
+            }, 3500);
+        }
+
+        // ── Navigation ──
+        function navigate(p) {
+            page.value = p;
+            search.value = '';
+            currentPage.value = 1;
+            sidebarOpen.value = false;
+            if (p !== 'dashboard') fetchData();
+        }
+
+        // ── Fetch data ──
+        async function fetchData() {
+            loading.value = true;
+            fetchError.value = '';
+            try {
+                const cfg = currentConfig.value;
+                const params = { page: currentPage.value };
+                if (search.value) params.q = search.value;
+                const res = await axios.get(cfg.endpoint, { params });
+                if (res.data.results !== undefined) {
+                    items.value = res.data.results;
+                    totalPages.value = Math.ceil(res.data.count / 20);
+                } else {
+                    items.value = res.data;
+                    totalPages.value = 1;
+                }
+            } catch (e) {
+                fetchError.value = e.response?.data?.detail || 'Erreur lors du chargement des données.';
+            } finally {
+                loading.value = false;
+            }
+        }
+
+        // ── Load dashboard stats ──
+        async function loadStats() {
+            const endpoints = [
+                ['/api/etudiants/', 'Étudiants'],
+                ['/api/medecins/',  'Médecins'],
+                ['/api/dossiers/',  'Dossiers'],
+                ['/api/rendezvous/','Rendez-vous'],
+                ['/api/consultations/','Consultations'],
+                ['/api/medicaments/','Médicaments'],
+                ['/api/prescriptions/','Prescriptions'],
+                ['/api/vaccinations/','Vaccinations'],
+            ];
+            for (const [url, label] of endpoints) {
+                try {
+                    const res = await axios.get(url, { params: { page_size: 1 } });
+                    const count = res.data.count !== undefined ? res.data.count : (Array.isArray(res.data) ? res.data.length : '?');
+                    const s = stats.value.find(s => s.label === label);
+                    if (s) s.count = count;
+                } catch {}
+            }
+        }
+
+        // ── Pagination ──
+        function goPage(p) {
+            currentPage.value = p;
+            fetchData();
+        }
+
+        // ── Open create modal ──
+        function openCreate() {
+            editingItem.value = null;
+            formData.value = {};
+            formErrors.value = {};
+            if (currentConfig.value.fields) {
+                currentConfig.value.fields.forEach(f => {
+                    formData.value[f.key] = '';
+                });
+            }
+            showModal.value = true;
+        }
+
+        // ── Open edit modal ──
+        function openEdit(item) {
+            editingItem.value = item;
+            formErrors.value = {};
+            formData.value = {};
+            if (currentConfig.value.fields) {
+                currentConfig.value.fields.forEach(f => {
+                    formData.value[f.key] = item[f.key] ?? '';
+                });
+            }
+            showModal.value = true;
+        }
+
+        function closeModal() {
+            showModal.value = false;
+            editingItem.value = null;
+            formErrors.value = {};
+        }
+
+        // ── Validate required fields ──
+        function validateForm() {
+            const errors = {};
+            (currentConfig.value.fields || []).forEach(f => {
+                if (f.required && (formData.value[f.key] === '' || formData.value[f.key] === null || formData.value[f.key] === undefined)) {
+                    errors[f.key] = 'Ce champ est obligatoire.';
+                }
+            });
+            formErrors.value = errors;
+            return Object.keys(errors).length === 0;
+        }
+
+        // ── Submit form ──
+        async function submitForm() {
+            if (!validateForm()) {
+                toast('Veuillez corriger les erreurs dans le formulaire.', 'error');
+                return;
+            }
+            saving.value = true;
+            formErrors.value = {};
+            try {
+                const cfg = currentConfig.value;
+                if (editingItem.value) {
+                    await axios.put(`${cfg.endpoint}${editingItem.value.id}/`, formData.value);
+                    toast('Enregistrement modifié avec succès !', 'success');
+                } else {
+                    await axios.post(cfg.endpoint, formData.value);
+                    toast('Enregistrement créé avec succès !', 'success');
+                }
+                closeModal();
+                fetchData();
+            } catch (e) {
+                const data = e.response?.data;
+                if (data && typeof data === 'object') {
+                    const errors = {};
+                    Object.entries(data).forEach(([key, msgs]) => {
+                        errors[key] = Array.isArray(msgs) ? msgs.join(' ') : msgs;
+                    });
+                    formErrors.value = errors;
+                    toast('Des erreurs ont été détectées. Veuillez les corriger.', 'error');
+                } else {
+                    toast('Erreur lors de l\'enregistrement.', 'error');
+                }
+            } finally {
+                saving.value = false;
+            }
+        }
+
+        // ── Delete ──
+        function confirmDelete(item) {
+            deletingItem.value = item;
+            showDeleteModal.value = true;
+        }
+
+        async function deleteItem() {
+            if (!deletingItem.value) return;
+            saving.value = true;
+            try {
+                const cfg = currentConfig.value;
+                const res = await axios.delete(`${cfg.endpoint}${deletingItem.value.id}/`);
+                toast(res.data?.message || 'Supprimé avec succès.', 'success');
+                showDeleteModal.value = false;
+                deletingItem.value = null;
+                fetchData();
+            } catch (e) {
+                const msg = e.response?.data?.error || 'Erreur lors de la suppression.';
+                toast(msg, 'error');
+                showDeleteModal.value = false;
+            } finally {
+                saving.value = false;
+            }
+        }
+
+        // ── Lifecycle ──
+        onMounted(() => {
+            loadStats();
+        });
+
+        return {
+            page, sidebarOpen, items, loading, fetchError, saving,
+            search, currentPage, totalPages, toasts, stats, username,
+            showModal, editingItem, formData, formErrors, modalTitle,
+            showDeleteModal,
+            currentConfig, pageTitle,
+            getField, statutClass,
+            navigate, fetchData, goPage,
+            openCreate, openEdit, closeModal, submitForm,
+            confirmDelete, deleteItem,
+        };
+    }
+}).mount('#app');
+</script>
+
+{% endverbatim %}
+</body>
+</html>

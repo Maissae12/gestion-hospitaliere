@@ -1,0 +1,143 @@
+{% extends "hopital/basemedecin.html" %}
+
+{% block content %}
+<h2>Consultation</h2>
+<!-- Messages d'erreur globaux -->
+{% if form.errors %}
+  <div>
+    {% for field in form %}
+        {% for error in field.errors %}
+            <p style="color:red;">
+                {{ field.label }} : {{ error }}
+            </p>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <p style="color:red;">{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+<form method="post">
+    {% csrf_token %}
+    <!-- Rendez-vous autocomplete -->
+    <div class="mb-3">
+    <label for="rdv_autocomplete" class="form-label">Rendez-vous</label>
+   <input type="text" id="rdv_autocomplete" class="form-control" readonly
+       placeholder="Rechercher un RDV par étudiant, médecin ">
+    <input type="hidden" name="rdv" id="rdv_id">
+</div>
+    <!-- Dossier médical autocomplete -->
+    <div class="mb-3">
+        <label for="dossier_autocomplete" class="form-label">Dossier Médical</label>
+       <input type="text" id="dossier_autocomplete" class="form-control" readonly
+       placeholder="Tapez le nom de l'étudiant"
+       value="{% if consultation %}{{ consultation.dossier.etudiant.nom }} {{ consultation.dossier.etudiant.prenom }}{% endif %}">
+        <input type="hidden" name="dossier" id="dossier_id"
+               value="{% if consultation %}{{ consultation.dossier.id }}{% endif %}">
+    
+    </div>
+
+    <!-- Médecin autocomplete -->
+    <div class="mb-3">
+        <label for="medecin_autocomplete" class="form-label">Médecin</label>
+       <input type="text" id="medecin_autocomplete" class="form-control" readonly
+       placeholder="Tapez le nom ou prénom du médecin"
+       value="{% if consultation %}{{ consultation.medecin.nom }} {{ consultation.medecin.prenom }}{% endif %}">
+        <input type="hidden" name="medecin" id="medecin_id"
+               value="{% if consultation %}{{ consultation.medecin.id }}{% endif %}">
+        
+    </div>
+
+   
+    <!-- Diagnostic -->
+    <div class="mb-3">
+        {{ form.diagnostic.label_tag }}
+        {{ form.diagnostic }}
+    </div>
+
+     <!-- Bouton Enregistrer -->
+        <button type="submit" class="btn btn-gradient px-4 py-2 mt-3">Enregistrer</button>
+        <a href="{% url 'consultation_list' %}" class="btn btn-secondary px-4 py-2 mt-3 ms-2">Retour à la liste</a>
+</form>
+
+<!-- jQuery + Autocomplete -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+<script>
+$(function() {
+    function setupAutocomplete(inputId, hiddenId, url) {
+        $(inputId).autocomplete({
+            source: function(request, response) {
+                $.getJSON(url, { term: request.term }, function(data) {
+                    response($.map(data, function(item) {
+                        return { label: item.label, value: item.id }; 
+                    }));
+                });
+            },
+            minLength: 0,
+            select: function(event, ui) {
+                $(inputId).val(ui.item.label);   // texte affiché
+                $(hiddenId).val(ui.item.value);  // ID stocké
+                return false;
+            }
+        });
+        // Affiche la liste complète dès qu'on clique dans le champ
+        $(inputId).focus(function() {
+            $(this).autocomplete("search", "");
+        });
+    }
+
+
+    setupAutocomplete("#dossier_autocomplete", "#dossier_id", "{% url 'autocomplete_dossier' %}");
+    setupAutocomplete("#medecin_autocomplete", "#medecin_id", "{% url 'autocomplete_medecin' %}");
+    setupAutocomplete("#rdv_autocomplete", "#rdv_id", "{% url 'autocomplete_rdv' %}");
+
+
+    // Préremplissage pour modification
+    {% if consultation %}
+        $("#dossier_autocomplete").val("{{ consultation.dossier.etudiant.nom }} {{ consultation.dossier.etudiant.prenom }}");
+        $("#dossier_id").val("{{ consultation.dossier.id }}");
+
+        $("#medecin_autocomplete").val("{{ consultation.medecin.nom }} {{ consultation.medecin.prenom }}");
+        $("#medecin_id").val("{{ consultation.medecin.id }}");
+    // Préremplissage pour modification
+      {% if consultation and consultation.rdv %}
+    $("#rdv_autocomplete").val(
+        "RDV {{ consultation.rdv.etudiant.nom }} {{ consultation.rdv.etudiant.prenom }} avec Dr {{ consultation.rdv.medecin.nom }} le {{ consultation.rdv.date_rdv }} à {{ consultation.rdv.heure|time:'H:i' }}"
+    );
+    $("#rdv_id").val("{{ consultation.rdv.id }}");
+         // ID stocké
+{% endif %}
+{% endif %}
+});
+$('form').submit(function(e) {
+    console.log("Dossier ID:", $("#dossier_id").val());
+    console.log("Médecin ID:", $("#medecin_id").val());
+    console.log("RDV ID:", $("#rdv_id").val());
+
+    if (!$('#dossier_id').val() || !$('#medecin_id').val() || !$('#rdv_id').val()) {
+        alert("Veuillez sélectionner un dossier, un médecin et un rendez-vous dans la liste !");
+        e.preventDefault();
+    }
+});
+
+</script>
+<style>
+.btn-gradient {
+    background: linear-gradient(90deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #2a5298, #1e3c72);
+    color: white;
+}
+
+
+</style>
+{% endblock %}

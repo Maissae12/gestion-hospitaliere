@@ -1,0 +1,30 @@
+{% extends "hopital/basemedecin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Détails de la Consultation</h1>
+
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <tr>
+                <th scope="row">Étudiant</th>
+                <td>{{ consultation.dossier.etudiant.nom }} {{ consultation.dossier.etudiant.prenom }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Médecin</th>
+                <td>{{ consultation.medecin.nom }} {{ consultation.medecin.prenom }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Rendez-Vous</th>
+                <td>{{ consultation.rdv.date_rdv }} à {{ consultation.rdv.heure }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Diagnostic</th>
+                <td>{{ consultation.diagnostic|default:"-" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{% url 'consultation_list' %}" class="btn btn-primary mt-3">← Retour à la liste des consultations</a>
+</div>
+{% endblock %}

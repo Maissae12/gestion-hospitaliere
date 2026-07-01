@@ -1,0 +1,33 @@
+{% extends "hopital/baseagent.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Formulaire Étudiant</h1>
+
+    <form method="post" class="p-4 shadow-sm rounded bg-light">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <!-- Bouton Enregistrer avec dégradé bleu -->
+        <button type="submit" class="btn btn-gradient px-4 py-2 mt-3">
+            Enregistrer
+        </button>
+        <a href="{% url 'etudiant_list' %}" class="btn btn-secondary px-4 py-2 mt-3 ms-2">
+            Retour à la liste
+        </a>
+    </form>
+</div>
+
+<!-- Styles pour le bouton dégradé -->
+<style>
+.btn-gradient {
+    background: linear-gradient(90deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #2a5298, #1e3c72);
+    color: white;
+}
+</style>
+{% endblock %}

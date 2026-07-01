@@ -1,0 +1,17 @@
+{% extends "hopital/basemedecin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-danger">Supprimer cette consultation ?</h1>
+
+    <div class="card p-4">
+        <p>Êtes-vous sûr de vouloir supprimer la consultation de <strong>{{ consultation.dossier.etudiant.nom }} {{ consultation.dossier.etudiant.prenom }}</strong> avec <strong>{{ consultation.medecin.nom }} {{ consultation.medecin.prenom }}</strong> prévue le <strong>{{ consultation.rdv.date_rdv }}</strong> à <strong>{{ consultation.rdv.heure }}</strong> ?</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2">Supprimer</button>
+            <a href="{% url 'consultation_list' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

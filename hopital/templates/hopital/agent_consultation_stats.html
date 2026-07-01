@@ -1,0 +1,52 @@
+{% extends "hopital/baseagent.html" %}
+{% block content %}
+
+<h2>📊 Statistiques des consultations</h2>
+
+<h3>Par filière</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Filière</th>
+            <th>Nombre de consultations</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in stats_filiere %}
+        <tr>
+            <td>{{ s.dossier__etudiant__filiere }}</td>
+            <td>{{ s.total }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">Aucune donnée</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Par niveau</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Niveau</th>
+            <th>Nombre de consultations</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in stats_niveau %}
+        <tr>
+            <td>{{ s.dossier__etudiant__niveau }}</td>
+            <td>{{ s.total }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">Aucune donnée</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'agent_tables' %}" class="btn btn-secondary">← Retour</a>
+
+{% endblock %}
