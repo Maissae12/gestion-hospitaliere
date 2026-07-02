@@ -1,0 +1,13 @@
+geshos/
+venv/
+env/
+.env
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+.vscode/
+.idea/
+*.log
+node_modules/
