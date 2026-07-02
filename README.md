@@ -69,7 +69,70 @@ python manage.py runserver
 ```
 
 ---
+## Installation avec Docker (recommandé)
 
+Ce projet est dockerisé. Le conteneur contient Python 3.12, Django et toutes les dépendances nécessaires, il n'est pas nécessaire d'installer Python ou les packages directement sur la machine.
+
+Note : la base de données MySQL doit être installée et lancée séparément sur la machine (ou sur un serveur accessible). Le conteneur Docker s'y connecte via les identifiants du fichier `.env`.
+
+### Prérequis
+- Docker Desktop (avec Docker Compose)
+- Un serveur MySQL actif (local ou distant)
+
+### Configuration
+
+Créer un fichier `.env` à la racine du projet avec les variables nécessaires, par exemple :
+DEBUG=True
+SECRET_KEY=your-secret-key
+DB_NAME=gestionhopitale
+DB_USER=djangouser
+DB_PASSWORD=MAISSAE12345
+DB_HOST=host.docker.internal
+DB_PORT=3306
+
+Comme MySQL tourne sur l'hôte (la machine) et non dans un conteneur, utiliser `host.docker.internal` comme `DB_HOST` (au lieu de `localhost`) pour que le conteneur puisse joindre la base de données.
+
+### Lancer le projet
+
+```bash
+docker compose up --build
+```
+
+Ou en arrière-plan :
+
+```bash
+docker compose up -d
+```
+
+L'application sera accessible sur : `http://localhost:8000/`
+
+### Commandes utiles
+
+```bash
+docker compose logs -f              # Voir les logs en direct
+docker compose stop                 # Arrêter le conteneur (sans le supprimer)
+docker compose start                # Redémarrer
+docker compose down                 # Arrêter et supprimer le conteneur
+docker compose exec web python manage.py migrate           # Appliquer les migrations
+docker compose exec web python manage.py createsuperuser   # Créer un superutilisateur
+docker compose exec web bash        # Accéder au shell du conteneur
+```
+
+### Structure Docker du projet
+├── Dockerfile              # Image Python 3.12-slim + dépendances système (build-essential, mysqlclient)
+├── docker-compose.yml      # Service web (Django), volume monté pour le hot-reload
+├── requirements.txt        # Dépendances Python installées dans l'image
+├── .env                    # Variables d'environnement (non versionné)
+└── .dockerignore
+
+### Points clés de la configuration
+
+- Le volume `.:/app` monte le code source dans le conteneur, ce qui permet au serveur de développement Django de détecter les changements en direct (StatReloader), sans reconstruire l'image à chaque modification.
+- Reconstruire l'image est nécessaire uniquement après modification du `Dockerfile` ou de `requirements.txt` :
+
+```bash
+docker compose up --build
+```
 ## Accès à l'application
 
 | URL | Description |
