@@ -118,12 +118,6 @@ docker compose exec web python manage.py createsuperuser   # Créer un superutil
 docker compose exec web bash        # Accéder au shell du conteneur
 ```
 
-### Structure Docker du projet
-├── Dockerfile              # Image Python 3.12-slim + dépendances système (build-essential, mysqlclient)
-├── docker-compose.yml      # Service web (Django), volume monté pour le hot-reload
-├── requirements.txt        # Dépendances Python installées dans l'image
-├── .env                    # Variables d'environnement (non versionné)
-└── .dockerignore
 
 ### Points clés de la configuration
 
